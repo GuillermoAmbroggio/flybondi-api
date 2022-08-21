@@ -4,6 +4,11 @@ import { InvalidTokens, Users, Trips, Orders } from '../models';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
   ...configs(),
 });
 

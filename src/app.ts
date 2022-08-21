@@ -18,10 +18,7 @@ const sessionDBaccess = new pg.Pool(
       }
     : {
         connectionString: DEV_URL_DATABASE,
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
+        ssl: { rejectUnauthorized: false },
       },
 );
 
