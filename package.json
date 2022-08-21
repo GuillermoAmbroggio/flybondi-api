@@ -6,7 +6,8 @@
   "author": "Guillermo Ambroggio",
   "license": "ISC",
   "scripts": {
-    "start": " nodemon --config nodemon.json index.ts ",
+    "start": "node index.ts",
+    "dev": " nodemon --config nodemon.json index.ts ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
