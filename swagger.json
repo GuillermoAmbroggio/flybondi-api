@@ -1,0 +1,675 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Ecommerce API",
+    "x-logo": {
+      "url": "https://logosbynick.com/wp-content/uploads/2018/03/final-logo-example.png",
+      "backgroundColor": "#FFFFFF"
+    },
+    "version": "v1"
+  },
+  "host": "ecommerce.api.com",
+  "schemes": ["https", "http"],
+  "basePath": "/v2",
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "API Key Auth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-API-KEY"
+    },
+    "Cookie Auth": {
+      "type": "http",
+      "scheme": "cookie"
+    },
+    "Bearer Auth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": ["JWT  |", "|  CSRF"]
+    }
+  },
+  "security": [
+    {
+      "API Key Auth": []
+    },
+    {
+      "Bearer Auth": []
+    },
+    {
+      "Cookie Auth": []
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Login Cookie",
+        "description": "Login using cookies",
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login a user",
+            "required": true,
+            "schema": { "$ref": "#/definitions/LoginUser" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "csrf": { "type": "string" }
+              }
+            }
+          },
+          "401": {
+            "description": "The password is incorrect/The email does not exist"
+          },
+          "400": { "description": "The api key code is incorrect" }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Logout session Cookie",
+        "description": "Logout user",
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "responses": {
+          "200": { "description": "Success - User disconnected" },
+          "400": { "description": "The api key code is invalid" }
+        }
+      }
+    },
+    "/login-token": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Login Token",
+        "description": "Login using token",
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login a user",
+            "required": true,
+            "schema": { "$ref": "#/definitions/LoginUser" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": { "type": "string" },
+                "refreshToken": { "type": "string" }
+              }
+            }
+          },
+          "401": {
+            "description": "The password is incorrect/The email does not exist"
+          },
+          "400": { "description": "Api error, does not exist secretJWT" }
+        }
+      }
+    },
+    "/refresh-token": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Refresh Token",
+        "description": "Get new access token",
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "required": ["token"],
+              "type": "object",
+              "properties": {
+                "token": {
+                  "title": "Refresh token",
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": { "type": "string" }
+              }
+            }
+          },
+          "400": {
+            "description": "Api error, does not exist secretRefreshJWT"
+          },
+          "401": { "description": "The refresh access token does not exist" },
+          "403": { "description": "The refresh access token expired" }
+        }
+      }
+    },
+    "/logout-token": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Logout session Token",
+        "description": "Logout user",
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "required": ["token"],
+              "type": "object",
+              "properties": {
+                "token": {
+                  "title": "Refresh token",
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Success - User disconnected" },
+          "400": { "description": "The api key code is invalid" },
+          "404": {
+            "description": "It is necessary to send the refresh token by body"
+          }
+        }
+      }
+    },
+    "/users/allusers": {
+      "get": {
+        "tags": ["users"],
+        "summary": "List of users",
+        "description": "List of all users.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/UserRead"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/create-user": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Create user",
+        "description": "Create a new user.",
+        "operationId": "createUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json", "application/xml"],
+        "security": [
+          {
+            "API Key Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
+            "required": true,
+            "schema": { "$ref": "#/definitions/User" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserRead"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Espesific user search",
+        "description": "Data of a user.",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserRead"
+            }
+          }
+        }
+      }
+    },
+    "/users/edit-data": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Update user",
+        "description": "Update data of a user.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Upadte user object",
+            "required": true,
+            "schema": {
+              "required": ["name", "lastname"],
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "lastname": { "type": "string", "minLength": 1 },
+                "phone": { "type": "string", "maxLength": 25 },
+                "country": { "type": "string" },
+                "birthdate": { "type": "string", "format": "date" }
+              },
+              "xml": { "name": "User" }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserRead"
+            }
+          }
+        }
+      }
+    },
+    "/users/edit-password": {
+      "put": {
+        "tags": ["users"],
+        "summary": "Update password",
+        "description": "Update password of a user.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "required": ["password", "newPassword", "confirmNewPassword"],
+              "type": "object",
+              "properties": {
+                "password": { "type": "string", "minLength": 8 },
+                "newPassword": { "type": "string", "minLength": 8 },
+                "confirmNewPassword": { "type": "string", "minLength": 8 }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - Updated password"
+          },
+          "400": {
+            "description": "New passwords entered do not match/The password of the account entered is not correct"
+          },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/users/delete": {
+      "delete": {
+        "tags": ["users"],
+        "summary": "Delete user",
+        "description": "Delete a user.",
+        "responses": {
+          "200": {
+            "description": "Success - User delete"
+          },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["products"],
+        "summary": "List of products",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["products"],
+        "summary": "Create a new product",
+        "operationId": "createProduct",
+        "consumes": ["application/json"],
+        "produces": ["application/json", "application/xml"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created product object",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Product" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": ["products"],
+        "summary": "Espesific product search",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["products"],
+        "summary": "Update a product",
+        "consumes": ["application/json"],
+        "produces": ["application/json", "application/xml"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Update product object",
+            "schema": { "$ref": "#/definitions/ProductUpdate" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["products"],
+        "summary": "Delete product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - Product delete"
+          },
+          "404": { "description": "Product not found" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": { "type": "integer", "format": "int32" },
+        "type": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "LoginUser": {
+      "required": ["email", "password"],
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Direcci\u00f3n de correo electr\u00f3nico",
+          "type": "string",
+          "format": "email",
+          "minLength": 1
+        },
+        "password": { "type": "string", "minLength": 8 }
+      }
+    },
+    "User": {
+      "required": ["email", "name", "lastname", "password"],
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "lastname": { "type": "string", "minLength": 1 },
+        "email": {
+          "title": "Direcci\u00f3n de correo electr\u00f3nico",
+          "type": "string",
+          "format": "email",
+          "minLength": 1
+        },
+        "password": { "type": "string", "minLength": 8 },
+        "phone": { "type": "string", "maxLength": 25 },
+        "country": { "type": "string" },
+        "birthdate": { "type": "string", "format": "date" }
+      },
+      "xml": { "name": "User" }
+    },
+    "UserRead": {
+      "required": ["email", "name", "lastname"],
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "lastname": { "type": "string", "minLength": 1 },
+        "email": {
+          "title": "Direcci\u00f3n de correo electr\u00f3nico",
+          "type": "string",
+          "format": "email"
+        },
+        "phone": { "type": "string", "maxLength": 25 },
+        "country": { "type": "string" },
+        "birthdate": { "type": "string", "format": "date" }
+      },
+      "xml": { "name": "User" }
+    },
+    "Product": {
+      "required": ["name", "price", "description", "images", "stock"],
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "price": { "type": "number", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "images": {
+          "type": "array",
+          "title": "Product's images",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "minLength": 1 },
+              "url": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "stock": {
+          "type": "array",
+          "title": "Product's stock",
+          "items": {
+            "$ref": "#/definitions/ProductStock"
+          }
+        }
+      },
+      "xml": { "name": "Product" }
+    },
+    "ProductUpdate": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "price": { "type": "number", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "images": {
+          "type": "array",
+          "title": "Product's images",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "minLength": 1 },
+              "url": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "stock": {
+          "type": "array",
+          "title": "Product's stock",
+          "items": {
+            "$ref": "#/definitions/ProductStock"
+          }
+        }
+      },
+      "xml": { "name": "Product" }
+    },
+    "ProductStock": {
+      "required": ["size", "details"],
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "default": "85 | 90 | 95 | 100",
+          "minLength": 1
+        },
+        "totalQuantity": {
+          "type": "number",
+          "readOnly": true
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": "black | red | beige | white"
+          },
+          "readOnly": true
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["color", "quantity"],
+            "properties": {
+              "color": {
+                "type": "string",
+                "minLength": 1,
+                "default": "black | red | beige | white"
+              },
+              "quantity": { "type": "number" }
+            }
+          }
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

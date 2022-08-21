@@ -1,0 +1,63 @@
+<% if (user && user.id) { %> <% if (user.role !== 'client') { %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document-Api</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <redoc spec-url="http://petstore.swagger.io/v2/swagger.json"></redoc>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+  </body>
+</html>
+<% } else { %>
+<div>
+  <p style="size: 30px; font-weight: bold; text-align: center">
+    You do not have the permissions to access this content.
+  </p>
+  <p>Return to <a href="/">log in</a>.</p>
+</div>
+<% } %> <% } else { %>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+
+  <body>
+    <p
+      style="
+        font-size: 52px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 30px;
+      "
+    >
+      401 Authorization Required
+    </p>
+    <div style="border: 1px solid grey; margin: 0px 30px"></div>
+    <p style="text-align: center; font-size: 20px">
+      Please login to access this content.
+    </p>
+    <div style="justify-content: center; display: flex">
+      <a href="/"><button>Login</button></a>
+    </div>
+  </body>
+</html>
+
+<% } %>
