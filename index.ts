@@ -5,7 +5,7 @@ import 'dotenv/config';
 import app from './src/app';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const dataJson: TripsAttributes[] = require('./dataset.json');
+const dataJson: TripsAttributes[] = require('./src/db/dataset.json');
 const port: number = Number(process.env.PORT) || 8000;
 
 (async () => {

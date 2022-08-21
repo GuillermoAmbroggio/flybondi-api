@@ -6,10 +6,12 @@
   "author": "Guillermo Ambroggio",
   "license": "ISC",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "node dist/index.js",
     "dev": " nodemon --config nodemon.json index.ts ",
+    "prod": "npm run build && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "tsc"
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
