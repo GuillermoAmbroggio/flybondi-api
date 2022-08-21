@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es6",
+    "module": "commonjs",
+    "target": "ES2021",
     "moduleResolution": "node",
     "sourceMap": true,
     "rootDir": "./",
     "outDir": "dist",
     "strict": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "lib": ["es2016", "dom", "es5"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "index.ts"],
+
   "exclude": ["node_modules", ".vscode"]
 }
