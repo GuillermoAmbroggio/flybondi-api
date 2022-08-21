@@ -1,11 +1,12 @@
 import app from './src/app';
 import { sequelize } from './src/db/sequalize';
 import { Trips } from './src/models';
-import dataJson from '../dataset.json';
+import { TripsAttributes } from './src/models/trips/trips.types';
+import 'dotenv/config';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dataJson: TripsAttributes[] = require('./dataset.json');
+console.log('adsokjadskasdkjlasdkljalsdjkjkladslkjasdljkasdljk');
 const port: number = Number(process.env.PORT) || 8000;
 
 (async () => {

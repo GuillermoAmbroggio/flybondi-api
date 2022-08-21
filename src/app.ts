@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import express, { Application, Request, Response, NextFunction } from 'express';
 import isAuthenticate from './hooks/authentication/isAuthenticate';
 import routes from './routes';
-import pg from 'pg';
-import session from 'express-session';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pg = require('pg');
+const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 
 const { ENV, DEV_URL_DATABASE, SESSION_SECRET1, SESSION_SECRET2 } = process.env;
@@ -19,6 +19,7 @@ const sessionDBaccess = new pg.Pool(
     : {
         connectionString: DEV_URL_DATABASE,
         ssl: {
+          require: true,
           rejectUnauthorized: false,
         },
       },
@@ -58,8 +59,9 @@ app.use(
     secret: [SESSION_SECRET1, SESSION_SECRET2],
     resave: false,
     saveUninitialized: false,
+    pruneSessionInterval: 60,
     cookie: {
-      maxAge: 60000 * 60 * 60 * 24 * 30, // 60000 = 60 seg = 1 min  * 60 = 1hs * 24 = 1dia * 30 = 1mes
+      maxAge: 60000 * 60, // 60000 = 60 seg = 1 min
       secure: ENV === 'production' ? true : false,
       httpOnly: true,
     },
@@ -68,7 +70,7 @@ app.use(
 
 app.use('/', routes);
 
-app.get('/', async (req: express.Request, res) => {
+app.get('/', async (req: express.Request, res, next) => {
   if (req.session.user && req.session.user.role !== 'client') {
     res.redirect('/home/docs');
   } else {
@@ -76,7 +78,7 @@ app.get('/', async (req: express.Request, res) => {
   }
 });
 
-app.get('/pruebas', isAuthenticate, async (req, res) => {
+app.get('/pruebas', isAuthenticate, async (req, res, next) => {
   const idUser = req.session.user.id;
   if (idUser) {
     return res.json({ idUser });
@@ -85,7 +87,12 @@ app.get('/pruebas', isAuthenticate, async (req, res) => {
 });
 
 app.use(
-  (err: { status: number; message: string }, req: Request, res: Response) => {
+  (
+    err: { status: number; message: string },
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     const status = err.status || 500;
     const message = err.message || err;
     console.error(err);
