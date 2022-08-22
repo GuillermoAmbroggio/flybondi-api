@@ -11,7 +11,8 @@
     "prod": "npm run build && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "build": "tsc"
+    "build": "tsc",
+    "postbuild": "copyfiles *.ico dist"
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
@@ -42,6 +43,7 @@
     "axios": "^0.25.0",
     "bcrypt": "^5.0.1",
     "connect-pg-simple": "^6.2.1",
+    "copyfiles": "^2.4.1",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",

@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "lib": ["es2016", "dom", "es5"]
   },
-  "include": ["src/**/*.ts", "index.ts", "src/**/*.json"],
+  "include": ["src/**/*.ts", "index.ts", "src/**/*.json", "favicon.ico"],
 
   "exclude": ["node_modules", ".vscode"]
 }

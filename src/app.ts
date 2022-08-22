@@ -76,7 +76,7 @@ app.use(
 app.use('/', routes);
 
 /** Insertar favicon */
-app.use(favicon(path.join('views', 'assets', 'favicon.ico')));
+app.use(favicon(path.join('favicon.ico')));
 
 app.get('/', async (req: express.Request, res) => {
   if (req.session.user && req.session.user.role !== 'client') {

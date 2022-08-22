@@ -89,7 +89,7 @@
             window.location.replace('/home');
           })
           .catch((err) => {
-            if (err.response.data) {
+            if (err.response?.data) {
               alert(err.response.data);
             } else {
               console.log(err);

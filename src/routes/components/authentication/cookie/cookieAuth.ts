@@ -68,7 +68,6 @@ cookieAuth.post(
         where: { email: email.toLocaleLowerCase() },
       }).then((data) => {
         if (data.length) {
-          console.log('COKIE AUTH 71', { password, dbPass: data[0].password });
           comparePassword(password, data[0].password).then((isCorrect) => {
             if (isCorrect) {
               const csrfToken = randomBytes(100).toString('base64');
@@ -77,7 +76,6 @@ cookieAuth.post(
                 role: data[0].role,
                 csrf: csrfToken,
               };
-              console.log('COKIE AUTHH 80', { session: req.session.user });
               res.send({ csrfToken: csrfToken });
             } else {
               res.status(401).send('La contraseña es incorrecta');
