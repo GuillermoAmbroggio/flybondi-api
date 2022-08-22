@@ -28,6 +28,11 @@ home.get(
 );
 
 home.get('/', async (req, res) => {
+  console.log(
+    '################## HOME REQ SESSION USER',
+    req.session,
+    req.session.user,
+  );
   if (req.session.user && req.session.user.role !== 'client') {
     res.redirect('/home/docs');
   } else {

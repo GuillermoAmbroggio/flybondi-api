@@ -66,9 +66,9 @@ app.use(
     saveUninitialized: false,
     pruneSessionInterval: 60,
     cookie: {
-      maxAge: 60000 * 60, // 60000 = 60 seg = 1 min
+      maxAge: 60000 * 60 * 60 * 24 * 30, // 60000 = 60 seg = 1 min
       secure: ENV === 'production' ? true : false,
-      httpOnly: true,
+      httpOnly: ENV === 'production' ? false : true,
     },
   }),
 );
