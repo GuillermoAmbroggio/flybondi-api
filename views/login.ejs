@@ -10,8 +10,7 @@
       integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
       crossorigin="anonymous"
     />
-    <title>EcommerceApi</title>
-
+    <title>Flybondi api</title>
     <style>
       .container {
         justify-content: center;
@@ -74,16 +73,19 @@
       integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
       crossorigin="anonymous"
     ></script>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
+      console.log('htmlllllllllasdasdasds', '<%=apiUrl%>', '<%=apiKey%>');
+
       function login() {
         let body = {
           email: document.getElementById('email').value,
           password: document.getElementById('password').value,
         };
         axios
-          .post('http://localhost:3001/login-api', body, {
-            headers: { 'X-Api-Key': 'apikeyweb' },
+          .post('<%=apiUrl%>/login-api', body, {
+            headers: { 'X-Api-Key': '<%=apiKey%>' },
           })
           .then((value) => {
             window.location.replace('/home');

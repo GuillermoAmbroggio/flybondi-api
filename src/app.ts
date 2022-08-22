@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import express, { Application, Request, Response, NextFunction } from 'express';
-import isAuthenticate from './hooks/authentication/isAuthenticate';
 import routes from './routes';
 import dotenv from 'dotenv';
+import path from 'path';
 dotenv.config();
 
 const pg = require('pg');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
+const favicon = require('serve-favicon');
 
-const { ENV, DEV_URL_DATABASE, SESSION_SECRET1, SESSION_SECRET2 } = process.env;
+const {
+  ENV,
+  DEV_URL_DATABASE,
+  SESSION_SECRET1,
+  SESSION_SECRET2,
+  API_URL_DEV,
+  X_API_KEY_WEB,
+} = process.env;
 const app: Application = express();
 const sessionDBaccess = new pg.Pool(
   ENV === 'development'
@@ -67,29 +75,19 @@ app.use(
 
 app.use('/', routes);
 
-app.get('/', async (req: express.Request, res, next) => {
+/** Insertar favicon */
+app.use(favicon(path.join('views', 'assets', 'favicon.ico')));
+
+app.get('/', async (req: express.Request, res) => {
   if (req.session.user && req.session.user.role !== 'client') {
     res.redirect('/home/docs');
   } else {
-    res.render('login');
+    res.render('login', { apiUrl: API_URL_DEV, apiKey: X_API_KEY_WEB });
   }
-});
-
-app.get('/pruebas', isAuthenticate, async (req, res, next) => {
-  const idUser = req.session.user.id;
-  if (idUser) {
-    return res.json({ idUser });
-  }
-  return res.status(404).send('User not found');
 });
 
 app.use(
-  (
-    err: { status: number; message: string },
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  (err: { status: number; message: string }, req: Request, res: Response) => {
     const status = err.status || 500;
     const message = err.message || err;
     console.error(err);

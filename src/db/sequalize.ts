@@ -1,14 +1,21 @@
 import { Sequelize } from 'sequelize-typescript';
 import configs from './configs';
 import { InvalidTokens, Users, Trips, Orders } from '../models';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const { ENV } = process.env;
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions:
+    ENV === 'development'
+      ? undefined
+      : {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
   ...configs(),
 });
 
