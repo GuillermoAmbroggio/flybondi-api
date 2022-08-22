@@ -82,9 +82,14 @@
           password: document.getElementById('password').value,
         };
         axios
-          .post('<%=apiUrl%>/login-api', body, {
-            headers: { 'X-Api-Key': '<%=apiKey%>' },
-          })
+          .post(
+            '<%=apiUrl%>/login-api',
+            body,
+            {
+              headers: { 'X-Api-Key': '<%=apiKey%>', withCredentials: true },
+            },
+            { withCredentials: true },
+          )
           .then((value) => {
             window.location.replace('/home');
           })

@@ -62,13 +62,11 @@ app.use(
       tableName: 'session',
     }),
     secret: [SESSION_SECRET1, SESSION_SECRET2],
-    resave: false,
+    resave: ENV === 'production' ? true : false,
     saveUninitialized: false,
     pruneSessionInterval: 60,
     cookie: {
-      maxAge: 60000 * 60 * 60 * 24 * 30, // 60000 = 60 seg = 1 min
-      secure: ENV === 'production' ? true : false,
-      httpOnly: ENV === 'production' ? false : true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
   }),
 );
