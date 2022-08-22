@@ -53,14 +53,14 @@
           id="email"
           placeholder="Your email"
           style="margin-bottom: 15px"
-          value="asd@gmail.com"
+          value=""
         />
         <input
           type="password"
           class="form-control inputs"
           name="password"
           id="password"
-          value="sD555ASD"
+          value=""
           placeholder="Your Password"
         />
         <button type="button" class="btn btn-primary button" onclick="login()">
@@ -76,8 +76,6 @@
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-      console.log('htmlllllllllasdasdasds', '<%=apiUrl%>', '<%=apiKey%>');
-
       function login() {
         let body = {
           email: document.getElementById('email').value,
