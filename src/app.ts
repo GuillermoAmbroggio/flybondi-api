@@ -76,7 +76,10 @@ app.use('/', routes);
 /** Insertar favicon */
 app.use(favicon(path.join('favicon.ico')));
 
-app.get('/', async (req: express.Request, res) => {
+/** Permite acceder publicamente a las imagenes de assets */
+app.use('/assets', express.static(__dirname + '/assets'));
+
+app.get('/', (req, res) => {
   if (req.session.user && req.session.user.role !== 'client') {
     res.redirect('/home/docs');
   } else {
@@ -84,13 +87,13 @@ app.get('/', async (req: express.Request, res) => {
   }
 });
 
-app.use(
+/* app.use(
   (err: { status: number; message: string }, req: Request, res: Response) => {
     const status = err.status || 500;
     const message = err.message || err;
     console.error(err);
     res.status(status).send(message);
   },
-);
+); */
 
 export default app;

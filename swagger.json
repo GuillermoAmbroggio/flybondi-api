@@ -1,16 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Ecommerce API",
+    "title": "Flybondi API",
     "x-logo": {
-      "url": "https://logosbynick.com/wp-content/uploads/2018/03/final-logo-example.png",
-      "backgroundColor": "#FFFFFF"
+      "url": "https://flybondi-api.herokuapp.com/assets/logo.png",
+      "backgroundColor": "#FFFFFF",
+      "altText": "Flybondy logo"
     },
     "version": "v1"
   },
-  "host": "ecommerce.api.com",
-  "schemes": ["https", "http"],
-  "basePath": "/v2",
+  "host": "flybondi-api.herokuapp.com",
+  "schemes": ["https"],
+  "basePath": "/",
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "securityDefinitions": {
@@ -298,91 +299,93 @@
         }
       }
     },
-    "/users/edit-data": {
-      "put": {
-        "tags": ["users"],
-        "summary": "Update user",
-        "description": "Update data of a user.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Upadte user object",
-            "required": true,
-            "schema": {
-              "required": ["name", "lastname"],
-              "type": "object",
-              "properties": {
-                "name": { "type": "string", "minLength": 1 },
-                "lastname": { "type": "string", "minLength": 1 },
-                "phone": { "type": "string", "maxLength": 25 },
-                "country": { "type": "string" },
-                "birthdate": { "type": "string", "format": "date" }
-              },
-              "xml": { "name": "User" }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/UserRead"
-            }
-          }
-        }
-      }
-    },
-    "/users/edit-password": {
-      "put": {
-        "tags": ["users"],
-        "summary": "Update password",
-        "description": "Update password of a user.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "required": ["password", "newPassword", "confirmNewPassword"],
-              "type": "object",
-              "properties": {
-                "password": { "type": "string", "minLength": 8 },
-                "newPassword": { "type": "string", "minLength": 8 },
-                "confirmNewPassword": { "type": "string", "minLength": 8 }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success - Updated password"
-          },
-          "400": {
-            "description": "New passwords entered do not match/The password of the account entered is not correct"
-          },
-          "404": { "description": "User not found" }
-        }
-      }
-    },
-    "/users/delete": {
-      "delete": {
-        "tags": ["users"],
-        "summary": "Delete user",
-        "description": "Delete a user.",
-        "responses": {
-          "200": {
-            "description": "Success - User delete"
-          },
-          "404": { "description": "User not found" }
-        }
-      }
-    },
-    "/products": {
+    "/trips": {
       "get": {
-        "tags": ["products"],
-        "summary": "List of products",
-        "parameters": [],
+        "tags": ["trips"],
+        "summary": "List of trips",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "city_from",
+            "description": "Origin city",
+            "schema": {
+              "type": "string",
+              "example": "COR"
+            }
+          },
+          {
+            "in": "query",
+            "name": "city_to",
+            "description": "Destination city",
+            "schema": {
+              "type": "string",
+              "example": "BRZ"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Number of the page",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "in": "query",
+            "name": "passengers",
+            "description": "Number of the passengers",
+            "schema": {
+              "type": "string",
+              "example": "2"
+            }
+          },
+          {
+            "in": "query",
+            "name": "price_min",
+            "description": "Price min of trips",
+            "schema": {
+              "type": "string",
+              "example": "150"
+            }
+          },
+          {
+            "in": "query",
+            "name": "price_max",
+            "description": "Price max of trips",
+            "schema": {
+              "type": "string",
+              "example": "650"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_since",
+            "description": "From this date",
+            "schema": {
+              "type": "string",
+              "example": "2021-11-15"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort_by",
+            "description": "Sort by 'price || data'",
+            "schema": {
+              "type": "string",
+              "example": "price"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort_type",
+            "description": "Sort type 'ASC || DESC'",
+            "schema": {
+              "type": "string",
+              "example": "ASC"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -406,104 +409,126 @@
                 "results": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/Product"
+                    "$ref": "#/definitions/Trip"
                   }
                 }
               }
             }
           }
         }
-      },
-      "post": {
-        "tags": ["products"],
-        "summary": "Create a new product",
-        "operationId": "createProduct",
-        "consumes": ["application/json"],
-        "produces": ["application/json", "application/xml"],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Created product object",
-            "required": true,
-            "schema": { "$ref": "#/definitions/Product" }
-          }
-        ],
+      }
+    },
+    "/trips/min-max-price": {
+      "get": {
+        "tags": ["trips"],
+        "summary": "Price min and max in DB",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/Product"
+              "required": ["min", "max"],
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "integer",
+                  "example": "150"
+                },
+                "max": {
+                  "type": "integer",
+                  "example": "650"
+                }
+              }
             }
           }
         }
       }
     },
-    "/products/{id}": {
-      "get": {
-        "tags": ["products"],
-        "summary": "Espesific product search",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/Product"
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": ["products"],
-        "summary": "Update a product",
+    "/orders": {
+      "post": {
+        "tags": ["orders"],
+        "summary": "Create a new order",
+        "operationId": "createOrder",
         "consumes": ["application/json"],
         "produces": ["application/json", "application/xml"],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "in": "body",
             "name": "body",
-            "description": "Update product object",
-            "schema": { "$ref": "#/definitions/ProductUpdate" }
+            "description": "Created order object",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Order" }
           }
         ],
         "responses": {
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/Product"
+              "$ref": "#/definitions/Order"
             }
           }
         }
-      },
-      "delete": {
-        "tags": ["products"],
-        "summary": "Delete product",
+      }
+    },
+    "/orders/all": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "Search orders",
+        "operationId": "searchOrder",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": ["count", "results"],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/:{id}": {
+      "post": {
+        "tags": ["orders"],
+        "summary": "Search order by id",
+        "operationId": "searchOrder",
+
         "parameters": [
           {
-            "name": "id",
             "in": "path",
+            "name": "id",
+            "description": "Id of order",
             "required": true,
-            "type": "string"
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
-            "description": "Success - Product delete"
-          },
-          "404": { "description": "Product not found" }
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
         }
       }
     }
@@ -566,61 +591,68 @@
       },
       "xml": { "name": "User" }
     },
-    "Product": {
-      "required": ["name", "price", "description", "images", "stock"],
+    "Trip": {
+      "required": [
+        "id",
+        "price",
+        "origin",
+        "destination",
+        "data",
+        "availability"
+      ],
       "type": "object",
       "properties": {
-        "name": { "type": "string", "minLength": 1 },
+        "id": { "type": "number", "minLength": 1, "readOnly": true },
         "price": { "type": "number", "minLength": 1 },
-        "description": { "type": "string", "minLength": 1 },
-        "images": {
-          "type": "array",
-          "title": "Product's images",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": { "type": "string", "minLength": 1 },
-              "url": { "type": "string", "minLength": 1 }
-            }
-          }
-        },
-        "stock": {
-          "type": "array",
-          "title": "Product's stock",
-          "items": {
-            "$ref": "#/definitions/ProductStock"
-          }
-        }
+        "origin": { "type": "string", "minLength": 1 },
+        "destination": { "type": "string", "minLength": 1 },
+        "data": { "type": "string", "minLength": 1 },
+        "availability": { "type": "number", "minLength": 1, "readOnly": true }
       },
-      "xml": { "name": "Product" }
+      "xml": { "name": "Trip" }
     },
-    "ProductUpdate": {
+    "Order": {
+      "required": ["destination", "data_go", "origin", "passengers", "total"],
       "type": "object",
       "properties": {
-        "name": { "type": "string", "minLength": 1 },
-        "price": { "type": "number", "minLength": 1 },
-        "description": { "type": "string", "minLength": 1 },
-        "images": {
-          "type": "array",
-          "title": "Product's images",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": { "type": "string", "minLength": 1 },
-              "url": { "type": "string", "minLength": 1 }
-            }
-          }
+        "id": { "type": "number", "minLength": 1, "readOnly": true },
+        "total": { "type": "number", "minLength": 1, "example": 1540 },
+        "origin": { "type": "string", "minLength": 1, "example": "COR" },
+        "destination": { "type": "string", "minLength": 1, "example": "BRZ" },
+        "data_go": {
+          "type": "string",
+          "minLength": 1,
+          "example": "2021-11-15"
         },
-        "stock": {
-          "type": "array",
-          "title": "Product's stock",
-          "items": {
-            "$ref": "#/definitions/ProductStock"
-          }
+        "goBack": { "type": "boolean", "example": "false" },
+        "data_back": {
+          "type": "string",
+          "example": "2021-11-23"
+        },
+        "passengers": {
+          "type": "number",
+          "minLength": 1,
+          "example": 1
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            }
+          },
+          "readOnly": true
         }
       },
-      "xml": { "name": "Product" }
+      "xml": { "name": "Trip" }
     },
+
     "ProductStock": {
       "required": ["size", "details"],
       "type": "object",
