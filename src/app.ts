@@ -77,7 +77,7 @@ app.use('/', routes);
 app.use(favicon(path.join('favicon.ico')));
 
 /** Permite acceder publicamente a las imagenes de assets */
-app.use('/assets', express.static(__dirname + '/assets'));
+app.use('/assets', express.static('assets'));
 
 app.get('/', (req, res) => {
   if (req.session.user && req.session.user.role !== 'client') {
