@@ -87,13 +87,4 @@ app.get('/', (req, res) => {
   }
 });
 
-/* app.use(
-  (err: { status: number; message: string }, req: Request, res: Response) => {
-    const status = err.status || 500;
-    const message = err.message || err;
-    console.error(err);
-    res.status(status).send(message);
-  },
-); */
-
 export default app;
