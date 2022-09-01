@@ -15,6 +15,7 @@ declare global {
       SECRET_JWT_REFRESH: string;
       API_URL_DEV: string;
       X_API_KEY_WEB: string;
+      CLIENT_URL: string;
     }
   }
 }

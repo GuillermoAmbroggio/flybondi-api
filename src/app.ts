@@ -17,6 +17,7 @@ const {
   SESSION_SECRET2,
   API_URL_DEV,
   X_API_KEY_WEB,
+  CLIENT_URL,
 } = process.env;
 const app: Application = express();
 const sessionDBaccess = new pg.Pool(
@@ -36,11 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const allowedOrigins: string[] = [
-    'http://localhost:3000',
-    'http://192.168.0.10:3000',
-    'http://192.168.0.53:3000',
-  ];
+  const allowedOrigins: string[] = [CLIENT_URL];
   const origin: string = req.headers.origin || '';
 
   if (allowedOrigins.includes(origin)) {
