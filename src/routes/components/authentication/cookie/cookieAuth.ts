@@ -40,9 +40,6 @@ cookieAuth.post(
                   role: data[0].role,
                   csrf: 'Login-Api',
                 };
-                console.log('########### COOCKIE AUTH 43', {
-                  reqSession: req.session,
-                });
                 res.sendStatus(200);
               }
             } else {

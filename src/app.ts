@@ -31,6 +31,27 @@ const sessionDBaccess = new pg.Pool(
       },
 );
 
+const sess: any = {
+  store: new pgSession({
+    pool: sessionDBaccess,
+    tableName: 'session',
+  }),
+  secret: [SESSION_SECRET1, SESSION_SECRET2],
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  },
+};
+
+if (ENV === 'production') {
+  app.set('trust proxy', 1);
+  sess.resave = true;
+  sess.cookie.secure = true;
+  sess.cookie.sameSite = 'none';
+}
+
+app.use(session(sess));
+
 app.set('view engine', 'ejs');
 
 app.use(express.json());
@@ -51,25 +72,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   next();
 });
-
-app.use(
-  session({
-    store: new pgSession({
-      pool: sessionDBaccess,
-      tableName: 'session',
-    }),
-    secret: [SESSION_SECRET1, SESSION_SECRET2],
-    resave: ENV === 'production' ? true : false,
-    saveUninitialized: false,
-    pruneSessionInterval: 60,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      httpOnly: true,
-      sameSite: 'None',
-      secure: true,
-    },
-  }),
-);
 
 app.use('/', routes);
 
