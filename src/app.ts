@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const allowedOrigins: string[] = [CLIENT_URL];
+  const allowedOrigins: string[] = [CLIENT_URL, 'http://localhost:3000'];
   const origin: string = req.headers.origin || '';
 
   if (allowedOrigins.includes(origin)) {
@@ -64,6 +64,9 @@ app.use(
     pruneSessionInterval: 60,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
     },
   }),
 );
